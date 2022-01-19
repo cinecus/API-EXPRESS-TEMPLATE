@@ -10,7 +10,6 @@ exports.validate_token = () => {
         if (!req.originalUrl) {
             return failed(res, NULL, 404)
         }
-        console.log('validate token process')
         const origin = getOriginPath(req.originalUrl)
         const checkIgnore = ignoreCheckToken.indexOf(origin) >= 0
         // if (checkIgnore || req.headers.authorization === process.env.BYPASS_KEY) {

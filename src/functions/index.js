@@ -36,16 +36,3 @@ exports.generateToken = (req, user_id, device_id = "") => {
     req.token_date = dayjs().format('YYYY-MM-DD HH:mm:ss')
     return
 }
-
-// exports.generateTokenLogin = async (req, user_id, device_id, token_noti) => {
-//     this.generateToken(req, user_id, device_id)
-//     // console.log(req.token)
-//     const obj_device = { _id: user_id, device_id, token_noti }
-//     await authModel.insertDevice(obj_device);
-//     return {
-//         user_id,
-//         token_id: req.token,
-//         token_timelogin: req.token_date,
-//         is_member: true
-//     }
-// }
