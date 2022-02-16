@@ -1,3 +1,3 @@
 ## ROUTER ##
- 	/api/v1/FEFU/auth
- 	/api/v1/FEFU/test
+ 	/api/v1/psnp/auth
+ 	/api/v1/psnp/test

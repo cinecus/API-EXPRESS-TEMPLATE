@@ -1,11 +1,10 @@
 const authModel = require('./authModel')
-const { machineId, machineIdSync } = require('node-machine-id')
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 
 const { err, debug } = require('../../config/debug')
 const { success, failed } = require('../../config/response')
-const { encrypted, decrypted, generateToken, generateTokenLogin } = require('../../functions')
+const { encrypted, decrypted, generateToken } = require('../../functions')
 
 class authController {
     async register(req, res) {
@@ -17,13 +16,12 @@ class authController {
             if (check_user.completed && !check_user.result) {
                 const { result } = await authModel.registerUser({ username, password: password_encrypted, first_name, last_name })
                 generateToken(req, result._id)
-                // const gen_token = await generateTokenLogin(req, result._id, device_id, token_noti)
                 return success(res, 'สมัครสมาชิกสำเร็จ', { user: result, token_id: req.token })
             } else {
-                return failed(res, 'มีผู้ใช้ username นี้ในระบบแล้ว', { user: check_user, token_id: req.token })
+                return failed(res, 'มีผู้ใช้ username นี้ในระบบแล้ว')
             }
         } catch (error) {
-            console.log(error)
+            debug(error)
             return failed(res, 'found some issue on action')
         }
     }
@@ -44,7 +42,7 @@ class authController {
                 return failed(res, 'username หรือ password ไม่ถูกต้อง')
             }
         } catch (error) {
-            console.log(error)
+            debug(error)
             return failed(res, 'found some issue on action')
         }
 
@@ -56,7 +54,7 @@ class authController {
             const user = await (await authModel.findOneUser({ _id: ObjectId(user_id) })).result
             return success(res, "ดึงข้อมูลผู้ใช้สำเร็จ", { user })
         } catch (error) {
-            console.log(error)
+            debug(error)
             return failed(res, 'found some issue on action')
         }
     }

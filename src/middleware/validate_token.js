@@ -12,10 +12,9 @@ exports.validate_token = () => {
         }
         const origin = getOriginPath(req.originalUrl)
         const checkIgnore = ignoreCheckToken.indexOf(origin) >= 0
-        // if (checkIgnore || req.headers.authorization === process.env.BYPASS_KEY) {
-        //     console.log('completed validate1')
-        //     return next()
-        // }
+        if (checkIgnore || req.headers.authorization === process.env.BYPASS_KEY) {
+            return next()
+        }
         if (req.headers && req.headers.authorization) {
             debug(`access token: ${req.headers.authorization}`)
             jsonwebtoken.verify(req.headers.authorization, process.env.SIGN, (error, decode) => {
@@ -26,7 +25,6 @@ exports.validate_token = () => {
                     debug('access user_id', decode.user_id)
                     req.token = req.headers.authorization
                     req.user_id = decode.user_id
-                    req.device_id = decode.device_id
                     next()
                 }
             })

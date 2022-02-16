@@ -10,6 +10,8 @@ const fs = require('fs')
 const bodyparser = require('body-parser')
 const { create } = require('domain')
 const short_uuid = require('short-uuid')
+const multer = require('multer')
+const cloudinary = require('cloudinary').v2;
 
 const { debug } = require('./src/config/debug')
 const { onTestDatabase } = require('./src/db/connect_db')
@@ -27,7 +29,17 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use(cors({ origin: true }))
+const whitelist = ['http://localhost:3000']
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(debug('Not allowed by CORS'))
+        }
+    }
+}
+app.use(cors(corsOptions))
 
 const limiter = ratelimit({
     windowMs: 60 * 1000,
@@ -53,6 +65,9 @@ app.use((req, res, next) => {
     debug(`api is called %O`, req.originalUrl)
     next()
 })
+
+//cloud storage
+cloudinary.config({ cloud_name: process.env.CLOUD_NAME, api_key: process.env.CLOUD_API_KEY, api_secret: process.env.CLOUD_SECRET_KEY })
 
 app.use('/api/v1/static', express.static(path.join(__dirname, './public')))
 createApi(app)
